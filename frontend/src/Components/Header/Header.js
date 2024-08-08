@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import "../styles.css";
 import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
+import "./header.css";
 
 const Header = () => {
   const [loginStatus, setLoginStatus] = useState(

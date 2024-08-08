@@ -1,0 +1,93 @@
+.login-div{
+    position: absolute;
+    left : 35%;
+    margin : 0px;
+    padding : 0px;
+}
+
+.login-div h1{
+    color: #0077b6;
+}
+
+.login-div form{
+    border: 2px solid #0077b6;
+    border-radius: 6px;
+    padding: 25px 10px;
+    width: 100%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-div input{
+    padding: 10px;
+    width: 420px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.login-div button[type="submit"]{
+    padding: 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    width: 440px;
+}
+
+.login-div p{
+    font-weight: 600;
+}
+
+.login-div a{
+    color: #0077b6;
+    text-decoration: none;
+}
+
+.login-div .g-btn{
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+
+
+/* Responsive design */
+
+@media (max-width: 321px){
+    .login-div{
+        position: absolute;
+        left : 0;
+        margin : 0px;
+        padding : 0px;
+    }
+    .login-div input{
+        width: 100px;
+    }
+    .login-div button[type="submit"]{
+        width: 100px;
+    }
+}
+
+@media (max-width: 426px){
+    .login-div input{
+        width: 200px;
+    }
+    .login-div button[type="submit"]{
+        width: 200px;
+    }
+}
+
+@media (max-width: 768px){
+    .login-div{
+        position: absolute;
+        left : 20%;
+        margin : 0px;
+        padding : 0px;
+    }
+    
+}

@@ -3,7 +3,7 @@ import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import axios from "axios";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import "../styles.css";
+import "./dashboard.css";
 
 const Dashboard = () => {
   const [email, setEmail] = useState(localStorage.getItem('email') || "");

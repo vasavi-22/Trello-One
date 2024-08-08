@@ -1,0 +1,55 @@
+.login-div{
+    position: absolute;
+    left : 35%;
+    margin : 0px;
+    padding : 0px;
+}
+
+.login-div h1{
+    color: #0077b6;
+}
+
+.login-div form{
+    border: 2px solid #0077b6;
+    border-radius: 6px;
+    padding: 25px 10px;
+    width: 100%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-div input{
+    padding: 10px;
+    width: 420px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.login-div button[type="submit"]{
+    padding: 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    width: 440px;
+}
+
+.login-div p{
+    font-weight: 600;
+}
+
+.login-div a{
+    color: #0077b6;
+    text-decoration: none;
+}
+
+.login-div .g-btn{
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}

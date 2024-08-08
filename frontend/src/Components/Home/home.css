@@ -1,0 +1,10 @@
+/* body{
+    position: relative;
+} */
+
+#home h1{
+    font-size: 44px;
+    margin-top: 200px;
+    text-align: center;
+    word-wrap: break-word;
+}

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, googleAuthProvider } from "../firebase";
+import { auth, googleAuthProvider } from "../../firebase";
 import { signInWithPopup } from "firebase/auth";
+import "./login.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");

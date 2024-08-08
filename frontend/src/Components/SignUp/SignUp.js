@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, googleAuthProvider } from "../firebase";
+import { auth, googleAuthProvider } from "../../firebase";
 import { signInWithPopup } from "firebase/auth";
 import { signInWithRedirect, getRedirectResult } from 'firebase/auth';
+import "./signup.css";
 
 const SignUp = () => {
   const [firstName, setFirstName] = useState("");
