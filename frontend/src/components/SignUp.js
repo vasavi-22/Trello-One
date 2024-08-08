@@ -31,7 +31,7 @@ const SignUp = () => {
     }
 
     try {
-      await axios.post("https://trello-app-9fop.onrender.com/api/signup", {
+      await axios.post("http://localhost:5000/api/signup", {
         firstName,
         lastName,
         email,

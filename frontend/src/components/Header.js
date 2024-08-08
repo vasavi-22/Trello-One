@@ -25,7 +25,7 @@ const Header = () => {
 
   const handleLogout = () => {
     axios
-      .post("https://trello-app-9fop.onrender.com/api/logout", {}, { withCredentials: true })
+      .post("http://localhost:5000/api/logout", {}, { withCredentials: true })
       .then((response) => {
         console.log(response.data);
         // Handle successful logout

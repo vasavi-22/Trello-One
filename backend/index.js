@@ -125,7 +125,7 @@ app.listen(PORT, () => {
 passport.use(new GoogleStrategy({
   clientID: 'YOUR_GOOGLE_CLIENT_ID',
   clientSecret: 'YOUR_GOOGLE_CLIENT_SECRET',
-  callbackURL: 'https://trello-app-9fop.onrender.com/auth/google/callback'
+  callbackURL: 'http://localhost:5000/auth/google/callback'
 }, async (token, tokenSecret, profile, done) => {
   let user = await User.findOne({ googleId: profile.id });
   if (!user) {
