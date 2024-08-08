@@ -25,7 +25,7 @@ const Header = () => {
 
   const handleLogout = () => {
     axios
-      .post("http://localhost:5000/api/logout", {}, { withCredentials: true })
+      .post("/api/logout", {}, { withCredentials: true })
       .then((response) => {
         console.log(response.data);
         // Handle successful logout

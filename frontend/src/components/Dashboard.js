@@ -20,7 +20,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (email) {
-      axios.get(`http://localhost:5000/api/tasks?email=${email}`).then((response) => {
+      axios.get(`/api/tasks?email=${email}`).then((response) => {
         console.log(response.data);
         setTasks(response.data);
       });
@@ -33,7 +33,7 @@ const Dashboard = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/tasks",
+        "/api/tasks",
         newTask
       );
       setTasks([...tasks, response.data]);
@@ -60,7 +60,7 @@ const Dashboard = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/tasks/${editTaskId}`,
+        `/api/tasks/${editTaskId}`,
         updatedTask
       );
       setTasks(
@@ -79,7 +79,7 @@ const Dashboard = () => {
 
   const handleDeleteTask = async (taskId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/tasks/${taskId}`);
+      await axios.delete(`/api/tasks/${taskId}`);
       setTasks(tasks.filter((task) => task._id !== taskId));
     } catch (error) {
       console.error("Error deleting task:", error);
@@ -131,7 +131,7 @@ const Dashboard = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/tasks/${draggableId}`,
+        `/api/tasks/${draggableId}`,
         updatedTask
       );
       setTasks(
