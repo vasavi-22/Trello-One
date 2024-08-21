@@ -1,27 +1,12 @@
 import React, { useState, useEffect } from "react";
-import {
-  DndContext,
-  closestCorners,
-  useSensor,
-  useSensors,
-  PointerSensor,
-  TouchSensor,
-  KeyboardSensor,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  useSortable,
-  arrayMove,
-} from "@dnd-kit/sortable";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import axios from "axios";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import "./dashboard.css";
-import Task from "./Task";
 
 const Dashboard = () => {
-  const [email, setEmail] = useState(localStorage.getItem("email") || "");
+  const [email, setEmail] = useState(localStorage.getItem('email') || "");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("");
@@ -47,7 +32,10 @@ const Dashboard = () => {
     const newTask = { title, description, status: "todo", email };
 
     try {
-      const response = await axios.post("/api/tasks", newTask);
+      const response = await axios.post(
+        "/api/tasks",
+        newTask
+      );
       setTasks([...tasks, response.data]);
       setTitle("");
       setDescription("");
@@ -71,7 +59,10 @@ const Dashboard = () => {
     const updatedTask = { title, description, status, email };
 
     try {
-      const response = await axios.put(`/api/tasks/${editTaskId}`, updatedTask);
+      const response = await axios.put(
+        `/api/tasks/${editTaskId}`,
+        updatedTask
+      );
       setTasks(
         tasks.map((task) => (task._id === editTaskId ? response.data : task))
       );
@@ -87,13 +78,6 @@ const Dashboard = () => {
   };
 
   const handleDeleteTask = async (taskId) => {
-    const isConfirmed = window.confirm(
-      "Are you sure you want to delete this task?"
-    );
-
-    if (!isConfirmed) {
-      return;
-    }
     try {
       await axios.delete(`/api/tasks/${taskId}`);
       setTasks(tasks.filter((task) => task._id !== taskId));
@@ -123,6 +107,41 @@ const Dashboard = () => {
     return date.toLocaleDateString("en-GB", options).replace(/, /g, ", ");
   };
 
+  const onDragEnd = async (result) => {
+    const { destination, source, draggableId } = result;
+    console.log("Drag Result:", result);
+
+    if (!destination) {
+      console.log("No destination. Dragging cancelled.");
+      return;
+    }
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      console.log("Dropped in the same place. Dragging cancelled.");
+      return;
+    }
+
+    const task = tasks.find((task) => task._id === draggableId);
+    const newStatus = destination.droppableId;
+
+    const updatedTask = { ...task, status: newStatus };
+
+    try {
+      const response = await axios.put(
+        `/api/tasks/${draggableId}`,
+        updatedTask
+      );
+      setTasks(
+        tasks.map((task) => (task._id === draggableId ? response.data : task))
+      );
+    } catch (error) {
+      console.error("Error updating task status:", error);
+    }
+  };
+
   const getFilteredTasks = (status) => {
     return tasks
       .filter((task) => task.status === status)
@@ -130,82 +149,15 @@ const Dashboard = () => {
         (task) =>
           task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           task.description.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    // .sort((a, b) => {
-    //   if (sortOrder === "recent") {
-    //     return new Date(b.createdAt) - new Date(a.createdAt);
-    //   } else {
-    //     return new Date(a.createdAt) - new Date(b.createdAt);
-    //   }
-    // });
-  };
-
-  // const getFilteredTasks = (status) => tasks.filter((task) => task.status === status)
-
-  const saveTasksToBackend = async (updatedTasks) => {
-    try {
-      const response = await axios.post("/api/save-tasks", updatedTasks);
-
-      if (!response.ok) {
-        throw new Error("Failed to save tasks");
-      }
-
-      const data = await response.json();
-      console.log("Tasks saved:", data);
-    } catch (error) {
-      console.error("Error saving tasks:", error);
-    }
-  };
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, TouchSensor, KeyboardSensor)
-  );
-
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-  
-    if (!over) {
-      return;
-    }
-  
-    const activeTask = tasks.find((task) => task._id === active.id);
-    const overTask = tasks.find((task) => task._id === over.id);
-  
-    if (!activeTask) {
-      return;
-    }
-  
-    if (!overTask || activeTask.status !== overTask.status) {
-      // Moving task between different lists or into an empty list
-      const targetStatus = overTask ? overTask.status : over.id;
-  
-      setTasks((prevTasks) => {
-        const updatedTasks = prevTasks.map((task) => {
-          if (task._id === active.id) {
-            return {
-              ...task,
-              status: targetStatus, // Set the task's status to the target column's status
-            };
-          }
-          return task;
-        });
-  
-        return updatedTasks;
+      )
+      .sort((a, b) => {
+        if (sortOrder === "recent") {
+          return new Date(b.createdAt) - new Date(a.createdAt);
+        } else {
+          return new Date(a.createdAt) - new Date(b.createdAt);
+        }
       });
-    } else {
-      // Reordering task within the same list
-      const activeIndex = tasks.findIndex((task) => task._id === active.id);
-      const overIndex = tasks.findIndex((task) => task._id === over.id);
-  
-      if (activeIndex !== overIndex) {
-        setTasks((prevTasks) => {
-          return arrayMove(prevTasks, activeIndex, overIndex);
-        });
-      }
-    }
-    // saveTasksToBackend(tasks);
   };
-  
 
   return (
     <div className="main-div">
@@ -313,42 +265,68 @@ const Dashboard = () => {
         </span>
       </div>
 
-      <DndContext
-        collisionDetection={closestCorners}
-        sensors={sensors}
-        onDragEnd={handleDragEnd}
-      >
+      <DragDropContext onDragEnd={onDragEnd}>
         <div className="cards-div">
           {["todo", "in-progress", "done"].map((status) => (
-            <SortableContext
-              key={status}
-              items={getFilteredTasks(status).map((task) => task._id)}
-              strategy={verticalListSortingStrategy}
-            >
-              <div className="card">
-                <p className="heading">
-                  {status.toUpperCase().replace("-", " ")}
-                </p>
-                {getFilteredTasks(status).map((task) => (
-                  <Task
-                    key={task._id}
-                    task={task}
-                    onFormat={formatDate}
-                    onDeleteTask={handleDeleteTask}
-                    onEditTask={handleEditTask}
-                    onViewTask={handleViewTask}
-                  />
-                ))}
-                {getFilteredTasks(status).length === 0 && (
-                  <div className="empty-list-placeholder" id={status}>
-                    Drag tasks here
-                  </div>
-                )}
-              </div>
-            </SortableContext>
+            <Droppable key={status} droppableId={status}>
+              {(provided) => (
+                <div
+                  className="card"
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  <p className="heading">
+                    {status.toUpperCase().replace("-", " ")}
+                  </p>
+                  {getFilteredTasks(status).map((task, index) => (
+                    <Draggable
+                      key={task._id}
+                      draggableId={task._id}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <div
+                          className="task"
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <p className="title">{task.title}</p>
+                          <p>{task.description}</p>
+                          <p className="time">
+                            Created at : {formatDate(task.createdAt)}
+                          </p>
+                          <div className="btns">
+                            <button
+                              className="delete"
+                              onClick={() => handleDeleteTask(task._id)}
+                            >
+                              Delete
+                            </button>
+                            <button
+                              className="edit"
+                              onClick={() => handleEditTask(task)}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="view"
+                              onClick={() => handleViewTask(task)}
+                            >
+                              View Details
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
           ))}
         </div>
-      </DndContext>
+      </DragDropContext>
     </div>
   );
 };
