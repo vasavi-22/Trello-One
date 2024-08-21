@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import {
   DndContext,
   closestCorners,
@@ -21,7 +22,8 @@ import "./dashboard.css";
 import Task from "./Task";
 
 const Dashboard = () => {
-  const [email, setEmail] = useState(localStorage.getItem("email") || "");
+  const location = useLocation();
+  const email = location?.state?.logData?.email;
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("");
@@ -163,22 +165,22 @@ const Dashboard = () => {
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
-  
+
     if (!over) {
       return;
     }
-  
+
     const activeTask = tasks.find((task) => task._id === active.id);
     const overTask = tasks.find((task) => task._id === over.id);
-  
+
     if (!activeTask) {
       return;
     }
-  
+
     if (!overTask || activeTask.status !== overTask.status) {
       // Moving task between different lists or into an empty list
       const targetStatus = overTask ? overTask.status : over.id;
-  
+
       setTasks((prevTasks) => {
         const updatedTasks = prevTasks.map((task) => {
           if (task._id === active.id) {
@@ -189,14 +191,14 @@ const Dashboard = () => {
           }
           return task;
         });
-  
+
         return updatedTasks;
       });
     } else {
       // Reordering task within the same list
       const activeIndex = tasks.findIndex((task) => task._id === active.id);
       const overIndex = tasks.findIndex((task) => task._id === over.id);
-  
+
       if (activeIndex !== overIndex) {
         setTasks((prevTasks) => {
           return arrayMove(prevTasks, activeIndex, overIndex);
@@ -205,8 +207,8 @@ const Dashboard = () => {
     }
     // saveTasksToBackend(tasks);
   };
-  
 
+  
   return (
     <div className="main-div">
       <button className="a-btn" onClick={() => setVisible(true)}>

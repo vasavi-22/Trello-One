@@ -18,10 +18,12 @@ const Login = () => {
         password,
       });
       const logData = JSON.parse(response.config.data);
-      localStorage.setItem("email",logData.email);
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("loggedIn",true);
-      navigate("/dashboard");
+      // localStorage.setItem("email",logData.email);
+      // localStorage.setItem("token", response.data.token);
+      // localStorage.setItem("loggedIn",true);
+      // console.log(logData);
+      navigate("/dashboard", { state: { logData } });
+      console.log("after navigate");
       window.dispatchEvent(new Event("storage")); // Trigger storage event to update Header
     } catch (error) {
       alert("Login failed!");
