@@ -34,10 +34,8 @@ const Header = () => {
         console.error("Error during logout:", error);
         // Handle logout error
       });
-
-    localStorage.removeItem("email");
-    localStorage.removeItem("loggedIn");
     localStorage.removeItem("token");
+    localStorage.removeItem("loggedIn");
     setLoginStatus(null);
     window.dispatchEvent(new Event("storage")); // Trigger storage event to update Header
   };

@@ -3,8 +3,8 @@ import "./home.css";
 
 const Home = () => {
     useEffect(() => {
+        localStorage.removeItem('token');
         localStorage.removeItem('loggedIn');
-        localStorage.removeItem("email");
     },[]);
 
     return(
