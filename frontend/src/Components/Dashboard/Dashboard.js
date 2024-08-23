@@ -38,8 +38,8 @@ const Dashboard = () => {
   useEffect(() => {
     if (email) {
       axios.get(`/api/tasks?email=${email}`).then((response) => {
-        console.log(response.data);
-        setTasks(response.data);
+        console.log(response.data.tasks, "tasks");
+        setTasks(response.data.tasks);
       });
     }
   }, [email]);

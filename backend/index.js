@@ -1,23 +1,20 @@
-const express = require('express');
-const session = require('express-session');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const cors = require('cors');
-const User = require('./models/User');
-const Session = require('./models/Session');
-const { authenticateToken } = require('./middleware/authMiddleware');
-require('dotenv').config();
+import express from "express";
+import session from "express-session";
+import mongoose from "mongoose";
+import bodyParser from "body-parser";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import cors from "cors";
+import { config } from "./src/config/index.js";
 
+import User from "./src/models/user.model.js";
+import Session from "./src/models/session.model.js";
+import { authenticateToken } from "./src/middleware/authMiddleware.js";
+import taskRoutes from "./src/routes/task.route.js";
 
-const taskRoutes = require('./routes/tasks');
-
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-
-const helmet = require('helmet');
-
+import passport from "passport";
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import helmet from "helmet";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -51,15 +48,11 @@ app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
 
-mongoose.connect(MONGO_URI)
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.log(err));
-
-app.use('/api/tasks', taskRoutes);
-
 app.get('/', (req, res) => {
   res.send('hello world');
 });
+
+app.use('/api/tasks', taskRoutes);
 
 app.post('/api/signup', async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
@@ -116,12 +109,6 @@ app.get('/api/dashboard', authenticateToken, (req, res) => {
   res.send('Welcome to the dashboard');
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-
-
-
 passport.use(new GoogleStrategy({
   clientID: 'YOUR_GOOGLE_CLIENT_ID',
   clientSecret: 'YOUR_GOOGLE_CLIENT_SECRET',
@@ -150,3 +137,17 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
+
+
+( async () => {
+  try {
+      await mongoose.connect(config.DATABASE);
+      console.log("MongoDB connected");
+
+      app.listen(process.env.PORT, () => {
+          console.log(`Server starts at port ${config.PORT}`);
+      });
+  } catch (error) {
+      console.error("Failed to connect to MongoDB", error);
+  }
+})()

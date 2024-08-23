@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../index'); // Assuming Express app is exported from index.js
+const app = require('../../index'); // Assuming Express app is exported from index.js
 
 describe('User Endpoints', () => {
   it('should create a new user', async () => {
