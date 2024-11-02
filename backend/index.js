@@ -46,7 +46,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.use(bodyParser.json());
+app.use(bodyParser.json()); // older way for app.use(express.json()) before 4.16.0
 
 app.get('/', (req, res) => {
   res.send('hello world');
